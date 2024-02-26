@@ -1,4 +1,4 @@
-package process
+package progress
 
 import (
 	"sync"
@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func TestProcess(t *testing.T) {
+func TestProgress(t *testing.T) {
 	progress := New()
 	progress.Start()
 	wg := &sync.WaitGroup{}
@@ -20,7 +20,7 @@ func TestProcess(t *testing.T) {
 	progress.Stop()
 }
 
-func worker(name string, progress *Process, wg *sync.WaitGroup) {
+func worker(name string, progress *Progress, wg *sync.WaitGroup) {
 	defer wg.Done()
 	bar := progress.AddBar(name, 100)
 	for i := 1; i <= 100; i++ {
