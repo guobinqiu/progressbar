@@ -1,4 +1,4 @@
-package process
+package progress
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-type Process struct {
+type Progress struct {
 	bars      []*Bar
 	stopCh    chan bool
 	interval  time.Duration
@@ -19,8 +19,8 @@ type Process struct {
 	mu        *sync.Mutex
 }
 
-func New() *Process {
-	return &Process{
+func New() *Progress {
+	return &Progress{
 		stopCh:    make(chan bool, 1),
 		interval:  10 * time.Millisecond,
 		out:       os.Stdout,
@@ -29,11 +29,11 @@ func New() *Process {
 	}
 }
 
-func (p *Process) Start() {
+func (p *Progress) Start() {
 	go p.listen()
 }
 
-func (p *Process) listen() {
+func (p *Progress) listen() {
 	t := time.NewTicker(p.interval)
 	for {
 		select {
@@ -47,11 +47,11 @@ func (p *Process) listen() {
 	}
 }
 
-func (p *Process) Stop() {
+func (p *Progress) Stop() {
 	p.stopCh <- true
 }
 
-func (p *Process) print() {
+func (p *Progress) print() {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
@@ -70,7 +70,7 @@ func (p *Process) print() {
 	p.lineCount = len(p.bars)
 }
 
-func (p *Process) AddBar(name string, total int) *Bar {
+func (p *Progress) AddBar(name string, total int) *Bar {
 	p.mu.Lock()
 	defer p.mu.Unlock()
 
